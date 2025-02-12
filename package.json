@@ -28,6 +28,7 @@
     "node": ">=10"
   },
   "dependencies": {
+    "@types/dotenv": "^8.2.3",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {

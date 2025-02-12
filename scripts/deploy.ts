@@ -1,6 +1,7 @@
 import { ethers, network } from 'hardhat'
 import { ContractFactory } from 'ethers'
 import fs from 'fs'
+import * as dotenv from 'dotenv'
 
 type ContractJson = { abi: any; bytecode: string }
 const artifacts: { [name: string]: ContractJson } = {
@@ -9,10 +10,18 @@ const artifacts: { [name: string]: ContractJson } = {
   UniswapV3PoolDeployer: require('../artifacts/contracts/UniswapV3PoolDeployer.sol/UniswapV3PoolDeployer.json'),
 }
 
+if (!process.env.DEPLOYER_KEY) {
+  throw new Error("Please set your DEPLOYER_KEY in a .env file");
+}
+
 async function main() {
-  const [owner] = await ethers.getSigners()
+  const deployer = new ethers.Wallet(
+    process.env.DEPLOYER_KEY,
+    ethers.provider
+  );
   const networkName = network.name
-  console.log('Deploying contracts with account:', owner.address)
+  console.log('Deploying contracts with account:', deployer.address)
+  console.log('Account balance:', (await deployer.getBalance()).toString())
 
   // UniswapV3Factory
   let uniswapV3Factory_address = ''
@@ -21,7 +30,7 @@ async function main() {
     const UniswapV3Factory = new ContractFactory(
       artifacts.UniswapV3Factory.abi,
       artifacts.UniswapV3Factory.bytecode,
-      owner
+      deployer
     )
     uniswapV3Factory = await UniswapV3Factory.deploy()
     await uniswapV3Factory.deployed()
@@ -32,7 +41,7 @@ async function main() {
     uniswapV3Factory = new ethers.Contract(
       uniswapV3Factory_address,
       artifacts.UniswapV3Factory.abi,
-      owner
+      deployer
     )
   }
 
@@ -43,7 +52,7 @@ async function main() {
     const UniswapV3PoolDeployer = new ContractFactory(
       artifacts.UniswapV3PoolDeployer.abi,
       artifacts.UniswapV3PoolDeployer.bytecode,
-      owner
+      deployer
     )
     uniswapV3PoolDeployer = await UniswapV3PoolDeployer.deploy()
     await uniswapV3PoolDeployer.deployed()
@@ -54,7 +63,7 @@ async function main() {
     uniswapV3PoolDeployer = new ethers.Contract(
       uniswapV3PoolDeployer_address,
       artifacts.UniswapV3PoolDeployer.abi,
-      owner
+      deployer
     )
   }
 

@@ -7,9 +7,16 @@ export default {
   networks: {
     hardhat: {
       allowUnlimitedContractSize: false,
+      // forking: {
+      //   url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      //   blockNumber: 12000000
+      // },
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    },
+    arbitrum: {
+      url: `https://arbitrum.infura.io/v3/${process.env.INFURA_API_KEY}`,
     },
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
